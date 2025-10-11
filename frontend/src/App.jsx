@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Video, Play, Clock, Activity, Loader2, CheckCircle, AlertCircle, Camera, StopCircle } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = '/api';
 
 export default function VideoActionDetector() {
   const [videos, setVideos] = useState([]);

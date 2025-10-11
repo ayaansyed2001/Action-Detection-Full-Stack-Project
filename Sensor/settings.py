@@ -143,3 +143,17 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
     ],
 }
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "frontend" / "dist" / "assets"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# 👇 Serve React build folder
+TEMPLATES[0]['DIRS'] = [BASE_DIR / "frontend" / "dist"]
