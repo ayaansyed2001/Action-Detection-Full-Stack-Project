@@ -18,9 +18,10 @@ pillow==11.0.0
 psycopg2-binary==2.9.11
 sqlparse==0.5.3
 sympy==1.13.3
-torch==2.8.1+cpu
-torchaudio==2.8.1+cpu
-torchvision==0.15.3+cpu
+torch==2.8.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+torchaudio==2.8.0+cpu
+torchvision==0.23.0+cpu
+
 typing_extensions==4.12.2
 tzdata==2025.2
 whitenoise==6.11.0
