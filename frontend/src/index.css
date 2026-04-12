@@ -1,17 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+  font-family: 'Space Grotesk', sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.12), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(217, 70, 239, 0.1), transparent 22%),
+    #020617;
+  --bg-primary: #020617;
+  --bg-panel: rgba(15, 23, 42, 0.76);
+  --bg-panel-strong: rgba(15, 23, 42, 0.92);
+  --border-soft: rgba(148, 163, 184, 0.16);
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-cyan: #22d3ee;
+  --accent-fuchsia: #d946ef;
+  --accent-lime: #4ade80;
+}
+
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body::selection {
+  background: rgba(34, 211, 238, 0.28);
+  color: #fff;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+video {
+  font: inherit;
 }
