@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Shield, Video, Zap } from 'lucide-react';
 import './App.css';
 import Header from './components/Header';
@@ -9,8 +9,20 @@ import UploadPanel from './components/UploadPanel';
 import WebcamPanel from './components/WebcamPanel';
 import VideoPlayerPanel from './components/VideoPlayerPanel';
 import DetectionResults from './components/DetectionResults';
+import AuthScreen from './components/AuthScreen';
+import {
+  fetchCurrentUser,
+  fetchVideos,
+  hasStoredAuthToken,
+  loginUser,
+  logoutUser,
+  signUpUser,
+  storeAuthToken,
+} from './services/api';
 
 export default function VideoActionDetector() {
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [detections, setDetections] = useState([]);
@@ -18,6 +30,63 @@ export default function VideoActionDetector() {
   const [uploadRequestKey, setUploadRequestKey] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    const bootstrapAuth = async () => {
+      if (!hasStoredAuthToken()) {
+        setAuthLoading(false);
+        return;
+      }
+
+      try {
+        const [{ user: currentUser }, userVideos] = await Promise.all([fetchCurrentUser(), fetchVideos()]);
+        setUser(currentUser);
+        setVideos(userVideos);
+        if (userVideos.length > 0) {
+          setSelectedVideo(userVideos[0]);
+        }
+      } catch (error) {
+        console.error('Auth bootstrap failed:', error);
+        storeAuthToken(null);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    bootstrapAuth();
+  }, []);
+
+  const loadAuthenticatedWorkspace = async (authResponse) => {
+    setUser(authResponse.user);
+    const userVideos = await fetchVideos();
+    setVideos(userVideos);
+    setSelectedVideo(userVideos[0] || null);
+    setDetections([]);
+    setActiveTab('upload');
+  };
+
+  const handleLogin = async (credentials) => {
+    const authResponse = await loginUser(credentials);
+    await loadAuthenticatedWorkspace(authResponse);
+  };
+
+  const handleSignup = async (payload) => {
+    await signUpUser(payload);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setUser(null);
+      setVideos([]);
+      setSelectedVideo(null);
+      setDetections([]);
+      setActiveTab('upload');
+    }
+  };
 
   const processedCount = videos.filter((video) => video.processed).length;
   const detectionAverage = detections.length
@@ -67,6 +136,10 @@ export default function VideoActionDetector() {
     );
   };
 
+  if (authLoading || !user) {
+    return <AuthScreen onLogin={handleLogin} onSignup={handleSignup} authLoading={authLoading} />;
+  }
+
   return (
     <div className="app-shell min-h-screen">
       <div className="app-background">
@@ -76,7 +149,7 @@ export default function VideoActionDetector() {
       </div>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6 lg:px-8">
-        <Header />
+        <Header user={user} onLogout={handleLogout} />
 
         <HeroSection
           heroMetrics={heroMetrics}

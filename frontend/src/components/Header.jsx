@@ -1,6 +1,6 @@
-import { Activity, Sparkles, Waves } from 'lucide-react';
+import { Activity, LogOut, Sparkles, UserCircle2, Waves } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ user, onLogout }) {
   return (
     <header className="glass-panel sticky top-4 z-20 mb-6 flex flex-col gap-4 rounded-[28px] px-5 py-4 backdrop-blur-xl sm:px-6 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-center gap-4">
@@ -28,6 +28,14 @@ export default function Header() {
           <Waves className="h-4 w-4 text-fuchsia-300" />
           Upload or live capture
         </div>
+        <div className="nav-chip">
+          <UserCircle2 className="h-4 w-4 text-cyan-300" />
+          {user.username}
+        </div>
+        <button type="button" className="secondary-button" onClick={onLogout}>
+          <LogOut className="h-4 w-4" />
+          Logout
+        </button>
       </div>
     </header>
   );
